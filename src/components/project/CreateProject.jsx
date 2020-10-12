@@ -16,6 +16,7 @@ const CreateProject = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         props.createProject(state);
+        props.history.push('/');
     };
 
     return (

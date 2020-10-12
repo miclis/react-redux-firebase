@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { isEmpty, isLoaded, useFirestoreConnect } from 'react-redux-firebase';
+import moment from 'moment';
 
 const ProjectDetails = (props) => {
     const { id } = props.match.params;
@@ -34,7 +35,7 @@ const ProjectDetails = (props) => {
                     <div>
                         Posted by {project.authorFirstName} {project.authorLastName}
                     </div>
-                    <div>2nd September, 2am</div>
+                    <div>{moment(project.createdAt.toDate()).calendar()}</div>
                 </div>
             </div>
         </div>
