@@ -14,10 +14,15 @@ import firebase from './config/fbConfig';
 
 import { createFirestoreInstance, getFirestore, reduxFirestore } from 'redux-firestore';
 import { getFirebase, ReactReduxFirebaseProvider } from 'react-redux-firebase';
+import AuthIsLoaded from './components/auth/AuthIsLoaded';
 
 const store = createStore(
     rootReducer,
-    compose(applyMiddleware(thunk.withExtraArgument({ getFirestore, getFirebase })), reduxFirestore(firebase))
+    compose(
+        applyMiddleware(thunk.withExtraArgument({ getFirestore, getFirebase })),
+        reduxFirestore(firebase),
+        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    )
 );
 
 const rrfConfig = {
@@ -37,7 +42,9 @@ ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
             <ReactReduxFirebaseProvider {...rrfProps}>
-                <App />
+                <AuthIsLoaded>
+                    <App />
+                </AuthIsLoaded>
             </ReactReduxFirebaseProvider>
         </Provider>
     </React.StrictMode>,

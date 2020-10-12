@@ -1,13 +1,22 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { isEmpty, isLoaded, useFirestoreConnect } from 'react-redux-firebase';
 import ProjectList from '../project/ProjectList';
 import Notifications from './Notifications';
-import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
-import { compose } from 'redux';
 
 const Dashboard = (props) => {
-    const { projects } = props;
+    useFirestoreConnect(['projects']);
+    const projects = useSelector((state) => state.firestore.ordered.projects);
+    if (!isLoaded(projects)) {
+        console.log('Not loaded yet');
+        return <div>Loading...</div>;
+    }
 
+    if (isEmpty(projects)) {
+        console.log('Empty');
+        return <div>Todos List Is Empty</div>;
+    }
+    console.log('render with data');
     return (
         <div className='dashboard container'>
             <div className='row'>
@@ -22,18 +31,4 @@ const Dashboard = (props) => {
     );
 };
 
-const mapStateToProps = (state) => {
-    console.log(state);
-    return {
-        projects: state.firestore.ordered.projects,
-    };
-};
-
-export default compose(
-    connect(mapStateToProps),
-    firestoreConnect([
-        {
-            collection: 'projects',
-        },
-    ])
-)(Dashboard);
+export default Dashboard;

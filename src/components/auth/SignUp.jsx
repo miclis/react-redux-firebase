@@ -1,6 +1,9 @@
 import React, { useReducer } from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import * as authActions from '../../redux/actions/authActions';
 
-const SignUp = () => {
+const SignUp = (props) => {
     const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
         email: '',
         password: '',
@@ -15,8 +18,11 @@ const SignUp = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(state);
+        props.signUp(state);
     };
+
+    const { auth, authError } = props;
+    if (auth.uid) return <Redirect to='/' />;
 
     return (
         <div className='container'>
@@ -40,10 +46,22 @@ const SignUp = () => {
                 </div>
                 <div className='input-field'>
                     <button className='btn pink lighten-1 z-depth-0'>Sign Up</button>
+                    <div className='red-text center'>{authError ? <p>{authError}</p> : null}</div>
                 </div>
             </form>
         </div>
     );
 };
 
-export default SignUp;
+const mapStateToProps = (state) => {
+    return {
+        auth: state.firebase.auth,
+        authError: state.auth.authError,
+    };
+};
+
+const mapDispatchToProps = {
+    signUp: authActions.signUp,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
