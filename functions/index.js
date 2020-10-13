@@ -43,3 +43,25 @@ exports.userJoined = functions.auth.user().onCreate((user) => {
             return createNotification(notification);
         });
 });
+
+exports.addAdminRole = functions.https.onCall((data, context) => {
+    // check request is made by an admin
+    if (context.auth.token.admin !== true) {
+        return { error: 'Only admins can add other admins, sucker!' };
+    }
+    // get user and add custom claim (admin)
+    return admin
+        .auth()
+        .getUserByEmail(data.email)
+        .then((user) => {
+            return admin.auth().setCustomUserClaims(user.uid, {
+                admin: true,
+            });
+        })
+        .then(() => {
+            return {
+                message: `Success! ${data.email} has been made an admin.`,
+            };
+        })
+        .catch((err) => err);
+});

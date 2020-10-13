@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { isEmpty, isLoaded, useFirestoreConnect } from 'react-redux-firebase';
 import ProjectList from '../project/ProjectList';
 import Notifications from './Notifications';
+import AdminPanel from './AdminPanel';
 
 const Dashboard = () => {
     useFirestoreConnect([
@@ -30,6 +31,7 @@ const Dashboard = () => {
                 </div>
                 <div className='col s12 m5 offset-m1'>
                     <Notifications notifications={notifications} />
+                    <AdminPanel />
                 </div>
             </div>
         </div>
