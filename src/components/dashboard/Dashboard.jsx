@@ -4,9 +4,14 @@ import { isEmpty, isLoaded, useFirestoreConnect } from 'react-redux-firebase';
 import ProjectList from '../project/ProjectList';
 import Notifications from './Notifications';
 
-const Dashboard = (props) => {
-    useFirestoreConnect(['projects']);
+const Dashboard = () => {
+    useFirestoreConnect([
+        { collection: 'projects', orderBy: ['createdAt', 'desc'] },
+        { collection: 'notifications', limit: 3, orderBy: ['time', 'desc'] },
+    ]);
     const projects = useSelector((state) => state.firestore.ordered.projects);
+    const notifications = useSelector((state) => state.firestore.ordered.notifications);
+
     if (!isLoaded(projects)) {
         console.log('Not loaded yet');
         return <div>Loading...</div>;
@@ -24,7 +29,7 @@ const Dashboard = (props) => {
                     <ProjectList projects={projects} />
                 </div>
                 <div className='col s12 m5 offset-m1'>
-                    <Notifications />
+                    <Notifications notifications={notifications} />
                 </div>
             </div>
         </div>
